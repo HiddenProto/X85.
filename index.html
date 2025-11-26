@@ -3,26 +3,71 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Search</title>
+  <title>Google</title>
   <link rel="icon" href="https://www.google.com/favicon.ico">
   <style>
     body { margin:0; font-family: arial,sans-serif; background:#fafafa; }
-    .search-bar { background:#f1f1f1; padding:12px; text-align:center; border-bottom:1px solid #ddd; position:fixed; top:0; left:0; right:0; z-index:999; }
-    .search-box { width:582px; max-width:95%; height:44px; border:1px solid #dfe1e5; border-radius:24px; padding:0 50px 0 20px; font-size:16px; outline:none; }
-    .search-btn { position:absolute; right:calc(50% - 250px); top:14px; background:none; border:none; cursor:pointer; font-size:20px; }
-    iframe { width:100%; height:calc(100vh - 70px); border:none; margin-top:70px; }
+    .bar {
+      background:#f1f1f1;
+      padding:12px;
+      text-align:center;
+      border-bottom:1px solid #ebebeb;
+      position:fixed;
+      top:0; left:0; right:0;
+      z-index:1000;
+    }
+    .input {
+      width:582px;
+      max-width:94%;
+      height:44px;
+      padding:0 16px;
+      font-size:16px;
+      border:1px solid #dfe1e5;
+      border-radius:24px;
+      outline:none;
+      box-shadow:none;
+    }
+    .input:focus { border-color:#4285f4; box-shadow:0 1px 6px rgba(32,33,36,0.28); }
+
+    iframe {
+      width:100%;
+      height:calc(100vh - 69px);
+      border:none;
+      margin-top:69px;
+      display:block;
+    }
+
+    /* "Currently awaiting..." screen */
+    #awaiting {
+      position:fixed;
+      top:69px; left:0; right:0; bottom:0;
+      background:#f8f9fa;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:22px;
+      color:#5f6368;
+      animation: pulse 4s infinite;
+      pointer-events:none;
+      z-index:999;
+    }
+    @keyframes pulse {
+      0%   { background:#f8f9fa; }
+      50%  { background:#e8f0fe; }
+      100% { background:#f8f9fa; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="search-bar">
-    <input type="text" class="search-box" id="url" placeholder="" autofocus>
-    <button class="search-btn" onclick="go()">🔍</button>
+  <div class="bar">
+    <input type="text" class="input" id="url" placeholder="Search Google or type a URL" autofocus>
   </div>
 
+  <div id="awaiting">Currently awaiting…</div>
   <iframe id="frame" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals"></iframe>
 
-  <!-- Ultraviolet Scripts -->
+  <!-- Ultraviolet -->
   <script src="https://cdn.jsdelivr.net/gh/titaniumnetwork-dev/Ultraviolet@latest/dist/ultraviolet.app.js"></script>
   <script>
     const uv = new Ultraviolet({
@@ -39,24 +84,25 @@
 
     const frame = document.getElementById('frame');
     const input = document.getElementById('url');
+    const awaiting = document.getElementById('awaiting');
 
     function go() {
       let url = input.value.trim();
       if (!url) return;
       if (!url.startsWith('http')) url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
       frame.src = __uv$config.prefix + __uv$config.encodeUrl(url);
+      awaiting.style.display = 'none';  // hide "awaiting" once something loads
     }
 
-    // Auto-load Google on first visit
-    input.value = '';
-    input.placeholder = 'Search Google or type a URL';
-    setTimeout(() => {
-      input.value = 'https://www.youtube.com';
-      go();
-    }, 500);
-
-    // Press Enter = Go
     input.addEventListener('keypress', e => { if (e.key === 'Enter') go(); });
+
+    // Optional: auto-load something on first visit (remove if you want pure "awaiting")
+    setTimeout(() => {
+      if (!frame.src) {
+        input.value = 'https://www.youtube.com';
+        go();
+      }
+    }, 800);
   </script>
 </body>
 </html>
