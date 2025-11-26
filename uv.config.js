@@ -1,11 +1,11 @@
-window.__uv$config = {
-    prefix: '/uv/',
-    bare: 'https://projectultra.loca.lt/bare/',
-    encodeUrl: Ultraviolet.codec.xor.encode,
-    decodeUrl: Ultraviolet.codec.xor.decode,
-    bundle: '/uv/uv.bundle.js',
-    config: '/uv/uv.config.js',
-    sw: '/uv/uv.sw.js',
-    client: '/uv/uv.client.js',
-    handler: '/uv/uv.handler.js'
+self.__uv$config = {
+  prefix: '/service/',
+  bare: 'https://uv.tls.b64.captain/',
+  encodeUrl: Ultraviolet.codec.xor.encode,
+  decodeUrl: Ultraviolet.codec.xor.decode,
+  handler: '/uv.handler.js',
+  bundle: '/uv.bundle.js',
+  config: '/uv.config.js',
+  sw: '/uv.sw.js',
+  client: '/uv.client.js'
 };
